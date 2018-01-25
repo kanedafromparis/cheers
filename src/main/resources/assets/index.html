@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>Welcome to my cheers Application !</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="/assets/css/cheers.css" media="all" rel="stylesheet" />
+    </head>
+    <body>
+        <!-- menu -->
+        <div id="menu" class="row">  
+            <ul class="menu">
+                <li class="menu__item">
+                    <a class="menu__link" href="/">Home</a>
+                </li>
+
+                <li class="menu__item menu__item--dropdown" v-on:click="toggle('info')" v-bind:class="{'open' : dropDowns.info.open}">
+                    <a class="menu__link menu__link--toggle" href="#">
+                        <span>Information</span>
+                        <i class="menu__icon fa fa-angle-down"></i>
+                    </a>
+
+                    <ul class="dropdown-menu">
+                        <li class="dropdown-menu__item">
+                            <a class="dropdown-menu__link" href="/assets/env.html">Environment Variables</a>
+                        </li>
+
+                        <li class="dropdown-menu__item">
+                            <a class="dropdown-menu__link" href="/assets/cheers.html">Cheers</a>
+                        </li>
+                        <li class="dropdown-menu__item">
+                            <a class="dropdown-menu__link" href="/assets/dns.html">DNS</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="menu__item menu__item--dropdown" v-on:click="toggle('prob')" v-bind:class="{'open' : dropDowns.prob.open}">
+                    <a class="menu__link menu__link--toggle" href="#">
+                        <span>Probes</span>
+                        <i class="menu__icon fa fa-angle-down"></i>
+                    </a>
+
+                    <ul class="dropdown-menu">
+                        <li class="dropdown-menu__item">
+                            <a class="dropdown-menu__link" href="/liveness">Liveness</a>
+                        </li>
+
+                        <li class="dropdown-menu__item">
+                            <a class="dropdown-menu__link" href="/readiness">Readiness</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="menu__item">
+                    <a class="menu__link" href="/assets/about.html">About</a>
+                </li>
+            </ul>            
+        </div>
+        <!-- menu end-->
+        <h1>Welcome to the Cheer application</h1>
+        <div>This application is designed for testing purpose, for Tutorials and hands-on</div>
+        <ul>
+            <li>source can be found :<a href="https://github.com/kanedafromparis/cheers" title="link to github repository">on github</a></li>
+            <li>Docker images can be found  :<a href="https://hub.docker.com/r/kanedafromparis/cheers" title="link to on docker hub">on docker hub</a></li>
+            <li>Docker & Kubernetes exercises be found  :<a href="https://github.com/kanedafromparis/cheers-tp" title="link to github repository">on github</a></li>
+        </ul>
+        <script src="https://cdn.jsdelivr.net/npm/vue@2.5.13"></script>
+        <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.3.5"></script>
+        <script src="https://cdn.jsdelivr.net/npm/vue-form"></script>
+        <script src="/assets/js/cheers.js"></script>
+
+    </body>
+</html>

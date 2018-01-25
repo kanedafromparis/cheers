@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<!--
+@Todo a nice UX
+-->
+<html>
+    <head>
+        <title>Environment Variable</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://cdn.jsdelivr.net/npm/vue@2.5.13"></script>
+        <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.3.5"></script>
+        <script src="https://cdn.jsdelivr.net/npm/vue-form"></script>
+
+        <link href="/assets/css/cheers.css" media="all" rel="stylesheet" />
+
+    </head>
+
+    <body>
+        <div id="menu" class="row">  
+            <ul class="menu">
+                <li class="menu__item">
+                    <a class="menu__link" href="/">Home</a>
+                </li>
+
+                <li class="menu__item menu__item--dropdown" v-on:click="toggle('info')" v-bind:class="{'open' : dropDowns.info.open}">
+                    <a class="menu__link menu__link--toggle" href="#">
+                        <span>Informations</span>
+                        <i class="menu__icon fa fa-angle-down"></i>
+                    </a>
+
+                    <ul class="dropdown-menu">
+                        <li class="dropdown-menu__item">
+                            <a class="dropdown-menu__link" href="/assets/env.html">Environment Variables</a>
+                        </li>
+
+                        <li class="dropdown-menu__item">
+                            <a class="dropdown-menu__link" href="/assets/cheers.html">Cheers</a>
+                        </li>
+                        <li class="dropdown-menu__item">
+                            <a class="dropdown-menu__link" href="/assets/dns.html">DNS</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="menu__item menu__item--dropdown" v-on:click="toggle('prob')" v-bind:class="{'open' : dropDowns.prob.open}">
+                    <a class="menu__link menu__link--toggle" href="#">
+                        <span>Probes</span>
+                        <i class="menu__icon fa fa-angle-down"></i>
+                    </a>
+
+                    <ul class="dropdown-menu">
+                        <li class="dropdown-menu__item">
+                            <a class="dropdown-menu__link" href="/liveness">Liveness</a>
+                        </li>
+
+                        <li class="dropdown-menu__item">
+                            <a class="dropdown-menu__link" href="/readiness">Readiness</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="menu__item">
+                    <a class="menu__link" href="/assets/about.html">About</a>
+                </li>
+            </ul>            
+        </div>
+        <hr>
+        <div id="app">
+            Think of something nice ;-)
+            <vue-form :state="formstate" @submit.prevent="onSubmit">
+
+                <validate tag="label">
+                    <span>Cheers *</span>
+                    <input v-model="model.intro" name="intro" required />
+
+                    <field-messages name="intro">                        
+                        <div slot="required">Name is a required field</div>
+                    </field-messages>
+                </validate>
+
+                <validate tag="label">
+                    <span>Justification</span>
+                    <input v-model="model.cause" name="cause" required />
+
+                    <field-messages name="cause">
+                        <div slot="required">You need to have a case, it is a required field</div>
+                    </field-messages>
+                </validate>
+
+                <button type="submit">Submit</button>
+            </vue-form>
+            
+            <!-- we currently have {{ formstate }} hugs for you -->
+            <pre>{{ feedback.intro }}<i>{{ feedback.intro }}</i></pre>
+        </div>
+        <hr>
+
+        <!-- component template -->
+        <script type="text/x-template" id="grid-template">
+            <table>
+            <thead>
+            <tr>
+            <th v-for="key in columns"
+            @click="sortBy(key)"
+            :class="{ active: sortKey == key }">
+            {{ key | capitalize }}
+            <span class="arrow" :class="sortOrders[key] > 0 ? 'asc' : 'dsc'">
+            </span>
+            </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-for="entry in filteredData">
+            <td v-for="key in columns">
+            {{entry[key]}}
+            </td>
+            </tr>
+            </tbody>
+            </table>
+        </script>
+
+        <div id="cheer">
+            <form id="search">
+                Search <input name="query" v-model="searchQuery">
+            </form>
+            <cheer-grid
+                :data="gridData"
+                :columns="gridColumns"
+                :filter-key="searchQuery">
+            </cheer-grid>
+        </div>
+        <script src="/assets/js/cheers.js"></script>
+    </body>
+</html>

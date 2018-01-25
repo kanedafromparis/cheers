@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>io.github.kandefromparis</groupId>
+    <artifactId>cheers</artifactId>
+    <version>0.0.1</version>
+    <packaging>jar</packaging>
+    
+    <properties>
+        <docker.maven.plugin.version>0.23.0</docker.maven.plugin.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <exec.mainClass>io.vertx.core.Starter</exec.mainClass>
+        <vertx.verticle>io.github.kandefromparis.generator.cheer.ServerNoDTBVerticle</vertx.verticle>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>io.vertx</groupId>
+            <artifactId>vertx-core</artifactId>
+            <version>3.5.0</version>
+        </dependency>
+        <dependency>
+            <groupId>io.vertx</groupId>
+            <artifactId>vertx-web</artifactId>
+            <version>3.5.0</version>
+        </dependency>
+        <dependency>
+            <groupId>io.vertx</groupId>
+            <artifactId>vertx-jdbc-client</artifactId>
+            <version>3.5.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hsqldb</groupId>
+            <artifactId>hsqldb</artifactId>
+            <version>2.3.3</version>
+        </dependency>
+        <!--
+        <dependency>
+        <groupId>org.mariadb.jdbc</groupId>
+        <artifactId>mariadb-java-client</artifactId>
+        <version>2.2.1</version>
+        </dependency>
+        -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.vertx</groupId>
+            <artifactId>vertx-unit</artifactId>
+            <version>3.5.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-core</artifactId>
+            <version>1.3</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.0.2</version>
+                <configuration>
+                    <archive>
+                        <index>true</index>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                        </manifest>
+                        <manifestEntries>
+                            <mode>development</mode>
+                            <url>${project.url}</url>
+                            <Main-Class>${exec.mainClass}</Main-Class>
+                            <Main-Verticle>${vertx.verticle}</Main-Verticle>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>2.3</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <transformers>
+                                <transformer
+                                    implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <manifestEntries>
+                                        <Main-Class>${exec.mainClass}</Main-Class>
+                                        <Main-Verticle>${vertx.verticle}</Main-Verticle>
+                                    </manifestEntries>
+                                </transformer>
+                            </transformers>
+                            <artifactSet/>
+                            <outputFile>${project.build.directory}/${project.artifactId}-${project.version}-fat.jar</outputFile>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>io.fabric8</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
+                <version>${docker.maven.plugin.version}</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <machine>
+                        <name>${project.artifactId}</name>
+                        <autoCreate>true</autoCreate>
+                        <createOptions>
+                            <driver>virtualbox</driver>
+                            <virtualbox-cpu-count>2</virtualbox-cpu-count>
+                        </createOptions>
+                    </machine>
+                    <images>
+                        <image>
+                            <alias>service</alias> 
+                            <name>kanedafromparis/${project.artifactId}:${project.version}</name>
+                            <build> 
+                                
+                                <from>openjdk:8-jre-alpine3.7</from> 
+                                <assembly>
+                                    <mode>dir</mode>
+                                    <targetDir>/opt/${project.artifactId}</targetDir>
+                                    <name>kanedafromparis/${project.artifactId}:${project.version}</name>
+                                    <descriptor>../assembly/docker-assembly.xml</descriptor>
+                                </assembly>
+                                <maintainer></maintainer>
+                                <workdir>/opt/${project.artifactId}</workdir>
+                                <env>
+                                    <JVM_OPTIONS>-Djava.security.egd=file:/dev/./urandom \ 
+                                        -XX:+UnlockExperimentalVMOptions \ 
+                                        -XX:+UseCGroupMemoryLimitForHeap \
+                                        -XX:MaxRAMFraction=2 -XshowSettings:vm
+                                    </JVM_OPTIONS>
+                                    <CHEER_CONF_FILE>/opt/${project.artifactId}/conf/cheer-default-conf.json</CHEER_CONF_FILE>
+                                    <CHEER_LOG_LEVEL>INFO</CHEER_LOG_LEVEL>
+                                    <CHEER_SLOW_READINESS>0</CHEER_SLOW_READINESS>
+                                    <CHEER_SLOW_LIVENESS>0</CHEER_SLOW_LIVENESS>
+
+                                </env>
+                                <labels>
+                                    <com.example.label-with-value>foo</com.example.label-with-value>
+                                    <version>${project.version}</version>
+                                    <artifactId>${project.artifactId}</artifactId>
+                                </labels>
+                                <entryPoint>
+                                    <shell>java $JVM_OPTIONS \
+                                        -jar /opt/${project.artifactId}/${project.artifactId}-${project.version}-fat.jar \
+                                        -conf $CHEER_CONF_FILE </shell>                                    
+                                </entryPoint>
+                                
+                            </build>
+                          
+
+                            <run> 
+                                <ports> 
+                                    <port>8080:8080</port>
+                                </ports>
+                                <!-- @todo investiget this issue
+                                <wait> 
+                                    <http>
+                                        <url>http://127.0.0.1:8080/readiness</url>
+                                        <method>GET</method>
+                                        <status>200..399</status>
+                                    </http>
+                                    <healthy>true</healthy>
+                                    <time>100000</time>
+                                </wait>-->
+                            </run>
+                        </image>
+                    </images>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.4.0</version>
+                <executions>
+                    <execution>
+                        <!-- run the application using the fat jar -->
+                        <id>run-app</id>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>java</executable>
+                            <arguments>
+                                <argument>-jar</argument>
+                                <argument>${project.build.directory}/${project.artifactId}-${project.version}-fat.jar</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>io.fabric8</groupId>
+                <artifactId>vertx-maven-plugin</artifactId>
+                <version>1.0.13</version>
+                <executions>
+                    <execution>
+                        <phase>run</phase>
+                    
+                        <configuration>
+                            <launcher>${exec.mainClass}</launcher>
+                            <verticle>${vertx.verticle}</verticle>
+                            <detail>true</detail>
+                            <config>
+                                
+                            </config>
+                            
+                            
+                            <jvmArgs> 
+                                <jvmArg>-Xms512m</jvmArg>
+                                <jvmArg>-Xmx1024m</jvmArg>
+                            </jvmArgs>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
