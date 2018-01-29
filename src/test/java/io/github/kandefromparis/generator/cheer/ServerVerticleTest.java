@@ -5,7 +5,9 @@
  */
 package io.github.kandefromparis.generator.cheer;
 
-import io.vertx.core.DeploymentOptions;
+import static io.github.kandefromparis.generator.cheer.ConfAPICall.API_1_0_CHEERS;
+import static io.github.kandefromparis.generator.cheer.ConfAPICall.API_1_0_INFO_DNS;
+import static io.github.kandefromparis.generator.cheer.ConfAPICall.API_1_0_INFO_ENV;
 import io.vertx.ext.unit.Async;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.Json;
@@ -13,7 +15,6 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.ext.unit.TestContext;
 import io.vertx.ext.unit.junit.VertxUnitRunner;
 import java.io.IOException;
-import java.net.ServerSocket;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -193,7 +194,7 @@ public class ServerVerticleTest {
     public void testGetEnv(TestContext context) {
         final Async async = context.async();
 
-        vertx.createHttpClient().getNow(this.port, this.host, ConfAPICall.API_1_0_INFO_ENV,
+        vertx.createHttpClient().getNow(this.port, this.host, API_1_0_INFO_ENV.getURL(),
                 response -> {
                     response.handler(body -> {
                         //context.assertTrue(body.toString().contains("PATH"));
@@ -216,7 +217,7 @@ public class ServerVerticleTest {
         String fqdnTest = "github.com";
         final String json = "{\"fqdn\":\""+fqdnTest+"\"}";
         
-        vertx.createHttpClient().post(port, this.host, ConfAPICall.API_1_0_INFO_DNS)
+        vertx.createHttpClient().post(port, this.host, API_1_0_INFO_DNS.getURL())
                 .putHeader("content-type", "application/json")
                 .putHeader("content-length", Integer.toString(json.length()))
                 .handler(response -> {
@@ -242,7 +243,7 @@ public class ServerVerticleTest {
         Async async = context.async();
         final String json = Json.encodePrettily(new Cheer("Care-bear", "smooch"));
         System.out.println(json);
-        vertx.createHttpClient().post(port, this.host, ConfAPICall.API_1_0_CHEERS)
+        vertx.createHttpClient().post(port, this.host, API_1_0_CHEERS.getURL())
                 .putHeader("content-type", "application/json")
                 .putHeader("content-length", Integer.toString(json.length()))
                 .handler(response -> {

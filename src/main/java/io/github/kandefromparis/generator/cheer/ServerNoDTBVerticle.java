@@ -7,6 +7,15 @@
  */
 package io.github.kandefromparis.generator.cheer;
 
+import static io.github.kandefromparis.generator.cheer.ConfAPICall.API_1_0_CHEERS;
+import static io.github.kandefromparis.generator.cheer.ConfAPICall.API_1_0_INFO_DNS;
+import static io.github.kandefromparis.generator.cheer.ConfAPICall.API_1_0_INFO_ENV;
+import static io.github.kandefromparis.generator.cheer.ConfAPICall.API_1_0_INFO_FILES;
+import static io.github.kandefromparis.generator.cheer.ConfAPICall.API_1_0_INFO_RANDOM;
+import static io.github.kandefromparis.generator.cheer.ConfAPICall.API_1_0_INFO_RUNTIME;
+import static io.github.kandefromparis.generator.cheer.ConfAPICall.API_1_0_RANDOMCHEERS;
+import static io.github.kandefromparis.generator.cheer.ConfAPICall.LIVENESS;
+import static io.github.kandefromparis.generator.cheer.ConfAPICall.READINESS;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
 import io.vertx.core.json.Json;
@@ -39,30 +48,30 @@ public class ServerNoDTBVerticle extends AbstractVerticle {
         
         // version 1.0 no databases
         createSomeData();
-        router.get(ConfAPICall.API_1_0_CHEERS).handler(this::getAll);
-        router.route(ConfAPICall.API_1_0_CHEERS + "*").handler(BodyHandler.create());
-        router.post(ConfAPICall.API_1_0_CHEERS).handler(this::addOne);
-        router.get(ConfAPICall.API_1_0_CHEERS + "/:id").handler(this::getOne);
-        router.delete(ConfAPICall.API_1_0_CHEERS + "/:id").handler(this::deleteOne);
+        router.get(API_1_0_CHEERS.getURL()).handler(this::getAll);
+        router.route(API_1_0_CHEERS.build("*")).handler(BodyHandler.create());
+        router.post(API_1_0_CHEERS.getURL()).handler(this::addOne);
+        router.get(API_1_0_CHEERS.build("/:id")).handler(this::getOne);
+        router.delete(API_1_0_CHEERS.build("/:id")).handler(this::deleteOne);
         
-        router.get(ConfAPICall.API_1_0_CHEERS + "Size").handler(this::getSize);
-        router.get(ConfAPICall.API_1_0_RANDOMCHEERS).handler(this::getOneAtRandom);
+        router.get(API_1_0_CHEERS.build("Size")).handler(this::getSize);
+        router.get(API_1_0_RANDOMCHEERS.getURL()).handler(this::getOneAtRandom);
         
 
         InfoVerticle info = new InfoVerticle();
-        router.get(ConfAPICall.API_1_0_INFO_RANDOM).handler(info::getRandomValue);
-        router.get(ConfAPICall.API_1_0_INFO_ENV).handler(info::getEnvValue);
-        router.get(ConfAPICall.API_1_0_INFO_RUNTIME).handler(info::getMemoryValue);
-        router.get(ConfAPICall.API_1_0_INFO_FILES).handler(info::getFilesValue);
+        router.get(API_1_0_INFO_RANDOM.getURL()).handler(info::getRandomValue);
+        router.get(API_1_0_INFO_ENV.getURL()).handler(info::getEnvValue);
+        router.get(API_1_0_INFO_RUNTIME.getURL()).handler(info::getMemoryValue);
+        router.get(API_1_0_INFO_FILES.getURL()).handler(info::getFilesValue);
 
         NSLookupVerticle ns = new NSLookupVerticle();
-        router.route(ConfAPICall.API_1_0_INFO_DNS + "*").handler(BodyHandler.create());
-        router.post(ConfAPICall.API_1_0_INFO_DNS).handler(ns::getNSLookup);
+        router.route(API_1_0_INFO_DNS.build("*")).handler(BodyHandler.create());
+        router.post(API_1_0_INFO_DNS.getURL()).handler(ns::getNSLookup);
 
                 
         ProbVerticle prob = new ProbVerticle();
-        router.get(ConfAPICall.LIVENESS).handler(prob::getLiveness);
-        router.get(ConfAPICall.READINESS).handler(prob::getReadiness);
+        router.get(LIVENESS.getURL()).handler(prob::getLiveness);
+        router.get(READINESS.getURL()).handler(prob::getReadiness);
 
         vertx
                 .createHttpServer()

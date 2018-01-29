@@ -1,4 +1,5 @@
 # cheers
+
 This is a sample application used for my kubernetes introduction courses
 
 ## Dev, Builds and Run
