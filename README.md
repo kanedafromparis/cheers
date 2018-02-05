@@ -14,7 +14,7 @@ $mvn clean package vertx:run
 ### run in docker
 
 ````
-mvn clean -DskipTests package docker:build docker:start docker:watch
+mvn clean package docker:build docker:start docker:watch
 ````
 
 

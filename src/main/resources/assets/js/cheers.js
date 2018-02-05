@@ -77,7 +77,7 @@ http://127.0.0.1:8080/api/1.0/cheers
 
         // register the grid component
         Vue.component('cheer-grid', {
-            template: '#grid-template',
+            template: '#cheer-template',
             props: {
                 data: Array,
                 columns: Array,
@@ -144,7 +144,7 @@ Vue.http.get('/api/1.0/cheers/').then(response => {
 
     // get body data               
     cheer.gridColumns = ['intro', 'cause'],
-            cheer.gridData = response.body;
+    cheer.gridData = response.body;
 
 }, response => {
     // error callback
@@ -156,7 +156,7 @@ http://127.0.0.1:8080/api/1.0/cheers/5
 
         // register the grid component
         Vue.component('env-grid', {
-            template: '#grid-template',
+            template: '#env-template',
             props: {
                 data: Array,
                 columns: Array,
@@ -223,7 +223,7 @@ var env = new Vue({
 Vue.http.get('/api/1.0/infos/env').then(response => {
     // get body data
     env.gridColumns = ['name', 'value'],
-            env.gridData = response.body;
+    env.gridData = response.body;
 
 }, response => {
     // error callback
@@ -268,7 +268,7 @@ new Vue({
     }
 });
 
-var env = new Vue({
+var fqdn = new Vue({
     el: '#fqdn',
     data: {
         searchQuery: '',
