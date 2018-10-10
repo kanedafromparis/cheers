@@ -78,6 +78,6 @@ curl -i -H "Content-Type: application/json" -X POST -d '{"fqdn":"google.com"}' h
 ### for Retrieving System and java info query
 
 ```
-curl -s http://127.0.0.1:8888/api/1.0/infos/env
+curl -s http://127.0.0.1:8080/api/1.0/infos/env
 ```
 
