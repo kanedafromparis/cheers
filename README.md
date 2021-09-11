@@ -74,3 +74,10 @@ HTTP/1.1 204 No Content means that the resource does not exist
 ```
 curl -i -H "Content-Type: application/json" -X POST -d '{"fqdn":"google.com"}' http://127.0.0.1:8080/api/1.0/info/dns
 ```
+
+### for Retrieving System and java info query
+
+```
+curl -s http://127.0.0.1:8080/api/1.0/infos/env
+```
+
