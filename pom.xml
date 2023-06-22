@@ -13,7 +13,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <vertx.version>3.9.6</vertx.version>
+        <vertx.version>4.2.3</vertx.version>
         <exec.mainClass>io.vertx.core.Starter</exec.mainClass>
         <vertx.verticle>io.github.kandefromparis.generator.cheer.ServerNoDTBVerticle</vertx.verticle>
     </properties>
@@ -99,8 +99,7 @@
                         </goals>
                         <configuration>
                             <transformers>
-                                <transformer
-                                    implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <manifestEntries>
                                         <Main-Class>${exec.mainClass}</Main-Class>
                                         <Main-Verticle>${vertx.verticle}</Main-Verticle>
@@ -140,7 +139,7 @@
                                     <name>kanedafromparis/${project.artifactId}:${project.version}</name>
                                     <descriptor>../assembly/docker-assembly.xml</descriptor>
                                 </assembly>
-                                <maintainer></maintainer>
+                                <maintainer/>
                                 <workdir>/opt/${project.artifactId}</workdir>
                                 <env>
                                     <JVM_OPTIONS>-Djava.security.egd=file:/dev/./urandom \ 
